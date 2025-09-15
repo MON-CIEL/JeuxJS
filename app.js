@@ -10,7 +10,7 @@ exp.use(express.static('D:/monteirom.SNIRW/TP20_Javascript/JeuxJS/www'));
 
 exp.get('/', function (req, res) {
     console.log('Reponse a un client'); 
-    res.sendFile('D:/monteirom.SNIRW/TP20_Javascript/JeuxJS/www/index.html');
+    res.sendFile('D:/monteirom.SNIRW/TP20_Javascript/JeuxJS/www/textchat.html');
 });
 
 exp.use(function (err, req, res, next) {
@@ -29,6 +29,7 @@ exp.ws('/echo', function (ws, req) {
         req.connection.remoteAddress, req.connection.remotePort);
 
     ws.on('message', function (message) {
+        message = ws._socket._peername.address + ws._socket._peername.port + ' : ' + message; 
         console.log('De %s %s, message :%s', req.connection.remoteAddress,
             req.connection.remotePort, message);
         ws.send(message);

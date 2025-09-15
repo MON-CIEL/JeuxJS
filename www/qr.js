@@ -19,32 +19,32 @@ function TesterLaCompatibilite() {
     }
     return estCompatible;
 }
-/*  ***************** Connexion au serveur WebSocket ********************   */ 
+/*  ***************** Connexion au serveur WebSocket ********************   */
 // 
-function ConnexionAuServeurWebsocket() { 
-    ws = new WebSocket('ws://172.17.50.132/echo'); 
- 
-    ws.onclose = function (evt) { 
-        window.alert('WebSocket close'); 
-    }; 
- 
-    ws.onopen = function () { 
-        console.log('WebSocket open'); 
-    }; 
- 
-    ws.onmessage = function (evt) { 
-        document.getElementById('messageRecu').value = evt.data; 
-    }; 
-} 
- 
-function ControleIHM(){ 
-    document.getElementById('Envoyer').onclick = BPEnvoyer; 
-} 
- 
-function BPEnvoyer(){ 
-    ws.send(document.getElementById('messageEnvoi').value); 
-    
-} 
+function ConnexionAuServeurWebsocket() {
+    ws = new WebSocket('ws://172.17.50.132/qr');
+
+    ws.onclose = function (evt) {
+        window.alert('WebSocket close');
+    };
+
+    ws.onopen = function () {
+        console.log('WebSocket open');
+    };
+
+    ws.onmessage = function (evt) {
+        document.getElementById('messageRecu').value = evt.data;
+    };
+}
+
+function ControleIHM() {
+    document.getElementById('Envoyer').onclick = BPEnvoyer;
+}
+
+function BPEnvoyer() {
+    ws.send(document.getElementById('messageEnvoi').value);
+
+}
 
 /*  ****************** Broadcast clients WebSocket  **************   */
 //
