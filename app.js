@@ -42,9 +42,70 @@ exp.ws('/echo', function (ws, req) {
 
 }); 
 
+/*  ****************** Broadcast clients WebSocket  **************   */
+//
+var aWss = expressWs.getWss('/qr');
+var WebSocket = require('ws');
+aWss.broadcast = function broadcast(data) {
+    console.log("Broadcast aux clients navigateur : %s", data);
+    aWss.clients.forEach(function each(client) {
+        if (client.readyState == WebSocket.OPEN) {
+            client.send(data, function ack(error) {
+                console.log("    -  %s-%s", client._socket.remoteAddress,
+                    client._socket.remotePort);
+                if (error) {
+                    console.log('ERREUR websocket broadcast : %s', error.toString());
+                }
+            });
+        }
+    });
+}; 
+
+var question = '?';
+var bonneReponse = 0;
+
+// Connexion des clients a la WebSocket /qr et evenements associés 
+// Questions/reponses 
+exp.ws('/qr', function (ws, req) {
+    console.log('Connection WebSocket %s sur le port %s',
+        req.connection.remoteAddress, req.connection.remotePort);
+    NouvelleQuestion();
+
+    ws.on('message', TraiterReponse);
+
+    ws.on('close', function (reasonCode, description) {
+        console.log('Deconnexion WebSocket %s sur le port %s',
+            req.connection.remoteAddress, req.connection.remotePort);
+    });
+
+
+    function TraiterReponse(message) {
+        console.log('De %s %s, message :%s', req.connection.remoteAddress,
+            req.connection.remotePort, message);
+        if (message == bonneReponse) {
+            NouvelleQuestion();
+        }
+    }
+
+
+    function NouvelleQuestion() {
+        var x = GetRandomInt(11);
+        var y = GetRandomInt(11);
+        question = x + '*' + y + ' =  ?';
+        bonneReponse = x * y;
+        aWss.broadcast(question);
+    }
+
+    function GetRandomInt(max) {
+        return Math.floor(Math.random() * Math.floor(max));
+    }
+
+}); 
+
 /*  ****** Serveur web et WebSocket en ecoute sur le port 80  ********   */
 //  
 var portServ = 80;
 exp.listen(portServ, function () {
     console.log('Serveur en ecoute');
 }); 
+

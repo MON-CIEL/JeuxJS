@@ -2,7 +2,6 @@
 
 var ipServeur = '172.17.50.132';     // Adresse ip du serveur
 var ws;                             // Variable pour l'instance de la WebSocket.
-var message;
 
 window.onload = function () {
     if (TesterLaCompatibilite()) {
@@ -43,24 +42,6 @@ function ControleIHM() {
 
 function BPEnvoyer() {
     ws.send(document.getElementById('messageEnvoi').value);
-
 }
 
-/*  ****************** Broadcast clients WebSocket  **************   */
-//
-var aWss = expressWs.getWss('/echo');
-var WebSocket = require('ws');
-aWss.broadcast = function broadcast(data) {
-    console.log("Broadcast aux clients navigateur : %s", data);
-    aWss.clients.forEach(function each(client) {
-        if (client.readyState == WebSocket.OPEN) {
-            client.send(data, function ack(error) {
-                console.log("    -  %s-%s", client._socket.remoteAddress,
-                    client._socket.remotePort);
-                if (error) {
-                    console.log('ERREUR websocket broadcast : %s', error.toString());
-                }
-            });
-        }
-    });
-}; 
+
